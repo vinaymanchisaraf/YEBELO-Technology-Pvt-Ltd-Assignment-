@@ -1,0 +1,30 @@
+services:
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda-0
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp
+      - "1"
+      - --memory
+      - "1G"
+      - --reserve-memory
+      - "0M"
+      - --node-id
+      - "0"
+      - --check=false
+    ports:
+      - "9092:9092"   # Kafka/Redpanda broker
+      - "9644:9644"   # Admin API
+
+  console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: redpanda-console
+    environment:
+      - REDPANDA_BROKERS=redpanda-0:9092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redpanda
